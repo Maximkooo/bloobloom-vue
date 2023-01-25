@@ -14,9 +14,8 @@
         </div>
       </div>
     </div>
-    <div v-if="isColor"><Color @colorFilter="changeColor" /></div>
-    <div v-if="isShape"><Shape @shapeFilter="changeShape" /></div>
-
+    <div v-show="isColor"><Color @colorFilter="changeColor" /></div>
+    <div v-show="isShape"><Shape @shapeFilter="changeShape" /></div>
     <div v-if="loader" class="wrapper">
       <Spinner />
     </div>
@@ -41,10 +40,18 @@ export default {
       isShape: false,
       glasses: [],
       loader: true,
+      pageNumber: 1,
+      payload: "",
     };
   },
   created() {
     this.getData();
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     colorMenu() {
@@ -58,19 +65,34 @@ export default {
 
     changeColor(filter) {
       const params = this.formatColors(filter);
-      this.getData(params);
+      this.payload = params;
+      this.getData();
     },
 
     changeShape(filter) {
       const params = this.formatShapes(filter);
-      this.getData(params);
+      this.payload = params;
+      this.getData();
     },
 
-    async getData(payload) {
-      console.log(payload);
-      const apiData = await getGlasses(payload);
-      this.loader = false;
+    handleScroll() {
+      const height = window.innerHeight + window.pageYOffset;
+      if (height > document.body.offsetHeight + 14) {
+        this.getNewPageData();
+      }
+    },
+
+    async getNewPageData() {
+      this.pageNumber += 1;
+      const apiData = await getGlasses(this.payload, this.pageNumber);
+      apiData.data.glasses.map((i) => this.glasses.push(i));
+    },
+
+    async getData() {
+      this.pageNumber = 1
+      const apiData = await getGlasses(this.payload, this.pageNumber);
       this.glasses = apiData.data.glasses;
+      this.loader = false;
     },
   },
 };

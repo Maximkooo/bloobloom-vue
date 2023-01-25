@@ -22,6 +22,9 @@ export default {
       currentFilter: [],
     };
   },
+  destroyed(){
+    console.log(123);
+  },
   methods: {
     changeFilter(name) {
       if (this.currentFilter.includes(name)) {
