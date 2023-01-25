@@ -3,14 +3,14 @@
   border-left: none;
 }
 .title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   text-transform: uppercase;
 }
 .title-filter {
   text-transform: uppercase;
   margin-top: 3px;
-  font-size: 15px;
+  font-size: 18px;
   border-right: 1px solid black;
   padding: 0;
 }
@@ -27,4 +27,16 @@
 .active{
   font-weight: bold;
   text-decoration: underline
+}
+
+.wrapper {
+  position: relative;
+}
+
+.spinner {
+  position: relative;
+
+  height: 75vh;
+  margin-bottom: 1em;
+  margin-top: 2em;
 }
