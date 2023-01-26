@@ -14,8 +14,18 @@
         </div>
       </div>
     </div>
-    <div v-show="isColor"><Color @colorFilter="changeColor" /></div>
-    <div v-show="isShape"><Shape @shapeFilter="changeShape" /></div>
+
+    <div v-show="isColor"><Color @colorsFilter="changeFilters" /></div>
+    <div v-show="isShape"><Shape @shapesFilter="changeFilters" /></div>
+    {{ shapesFilter }}
+    <CurrentFilter
+      v-if="colorsFilter.length || shapesFilter.length"
+      :colors="colorsFilter"
+      :shapes="shapesFilter"
+      :quantityItem="quantityItem"
+      @clear="clearFilter"
+    />
+
     <div v-if="loader" class="wrapper">
       <Spinner />
     </div>
@@ -27,12 +37,20 @@
 import Color from "./Color.vue";
 import Shape from "./Shape.vue";
 import Table from "./Table.vue";
+import CurrentFilter from "./CurrentFilter.vue";
 import { getGlasses } from "../../api/index";
 import { GlassesHelper } from "../../helper/GlassesHelper";
 import Spinner from "../../components/Spinner";
+import { TYPE_OF_FILTER } from "../../helper/constants";
 
 export default {
-  components: { Color, Shape, Table, Spinner },
+  components: {
+    Color,
+    Shape,
+    Table,
+    CurrentFilter,
+    Spinner,
+  },
   mixins: [GlassesHelper],
   data() {
     return {
@@ -41,7 +59,8 @@ export default {
       glasses: [],
       loader: true,
       pageNumber: 1,
-      payload: "",
+      colorsFilter: [],
+      shapesFilter: [],
     };
   },
   created() {
@@ -53,6 +72,11 @@ export default {
   destroyed() {
     window.removeEventListener("scroll", this.handleScroll);
   },
+  computed: {
+    quantityItem() {
+      return `${this.glasses.length} RESULTS ON PAGE`;
+    },
+  },
   methods: {
     colorMenu() {
       this.isColor = !this.isColor;
@@ -63,34 +87,41 @@ export default {
       this.isColor = false;
     },
 
-    changeColor(filter) {
-      const params = this.formatColors(filter);
-      this.payload = params;
-      this.getData();
-    },
-
-    changeShape(filter) {
-      const params = this.formatShapes(filter);
-      this.payload = params;
+    changeFilters(filter, type) {
+      if (type === TYPE_OF_FILTER.COLOR) {
+        this.colorsFilter = filter;
+      } else {
+        this.shapesFilter = filter;
+      }
       this.getData();
     },
 
     handleScroll() {
       const height = window.innerHeight + window.pageYOffset;
       if (height > document.body.offsetHeight + 14) {
+        this.pageNumber += 1;
         this.getNewPageData();
       }
     },
 
+    clearFilter() {
+      this.colorsFilter = [];
+      this.shapesFilter = [];
+      this.getData();
+    },
+
     async getNewPageData() {
-      this.pageNumber += 1;
-      const apiData = await getGlasses(this.payload, this.pageNumber);
+      const color = this.formatColors(this.colorsFilter);
+      const shape = this.formatShapes(this.shapesFilter);
+      const apiData = await getGlasses(color, shape, this.pageNumber);
       apiData.data.glasses.map((i) => this.glasses.push(i));
     },
 
     async getData() {
-      this.pageNumber = 1
-      const apiData = await getGlasses(this.payload, this.pageNumber);
+      const color = this.formatColors(this.colorsFilter);
+      const shape = this.formatShapes(this.shapesFilter);
+      this.pageNumber = 1;
+      const apiData = await getGlasses(color, shape, this.pageNumber);
       this.glasses = apiData.data.glasses;
       this.loader = false;
     },

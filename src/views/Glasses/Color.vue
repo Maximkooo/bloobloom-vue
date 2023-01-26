@@ -13,26 +13,24 @@
 
 <script>
 import FilterButton from "../../components/FilterButton.vue";
+import { TYPE_OF_FILTER } from "../../helper/constants";
 
 export default {
   components: { FilterButton },
   data() {
     return {
       items: ['black', 'tortoise', 'coloured', 'crystal', 'dark', 'bright'],
-      currentFilter: [],
+      colors: [],
     };
-  },
-  destroyed(){
-    console.log(123);
   },
   methods: {
     changeFilter(name) {
-      if (this.currentFilter.includes(name)) {
-        this.currentFilter = this.currentFilter.filter((i) => i !== name);
+      if (this.colors.includes(name)) {
+        this.colors = this.colors.filter((i) => i !== name);
       } else {
-        this.currentFilter.push(name);
+        this.colors.push(name);
       }
-      this.$emit('colorFilter', this.currentFilter);
+      this.$emit('colorsFilter', this.colors, TYPE_OF_FILTER.COLOR);
     },
   },
 };

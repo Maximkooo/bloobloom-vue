@@ -16,15 +16,15 @@ export default {
       required: true,
     },
   },
-  data(){
-    return{
-      isSelected: false
-    }
+  data() {
+    return {
+      isSelected: false,
+    };
   },
   methods: {
     currentItem(name) {
-      this.isSelected = !this.isSelected
-      this.$emit('currentItem', name);
+      this.isSelected = !this.isSelected;
+      this.$emit("currentItem", name);
     },
   },
 };
