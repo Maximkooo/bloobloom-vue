@@ -15,15 +15,19 @@ export default {
       type: String,
       required: true,
     },
+    currentFilter: {
+      type: Array,
+      default: () => [],
+      // required: true
+    },
   },
-  data() {
-    return {
-      isSelected: false,
-    };
+  computed: {
+    isSelected() {
+      return this.currentFilter.includes(this.item) ? true : false;
+    },
   },
   methods: {
     currentItem(name) {
-      this.isSelected = !this.isSelected;
       this.$emit("currentItem", name);
     },
   },

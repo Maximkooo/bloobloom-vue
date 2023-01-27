@@ -5,31 +5,29 @@
       v-for="(item, index) in items"
       :key="index"
     >
-      <FilterButton :item="item" @currentItem="changeFilter"></FilterButton>
+      <FilterButton :item="item" :currentFilter="shapesFilter" @currentItem="changeFilter"></FilterButton>
     </div>
   </div>
 </template>
 
 <script>
 import FilterButton from "../../components/FilterButton.vue";
-import { TYPE_OF_FILTER } from "../../helper/constants";
+import { mapGetters } from "vuex";
 
 export default {
   components: { FilterButton },
   data() {
     return {
       items: ["square", "rectangle", "round", "cat-eye"],
-      shapes: [],
     };
+  },
+  computed: {
+    ...mapGetters("glasses", ["shapesFilter"]),
   },
   methods: {
     changeFilter(name) {
-      if (this.shapes.includes(name)) {
-        this.shapes = this.shapes.filter((i) => i !== name);
-      } else {
-        this.shapes.push(name);
-      }
-      this.$emit("shapesFilter", this.shapes, TYPE_OF_FILTER.SHAPE);
+      this.$store.commit("glasses/SET_SHAPES_FILTER", name);
+      this.$emit("changeFilters");
     },
   },
 };

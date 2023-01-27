@@ -15,8 +15,8 @@
       </div>
     </div>
 
-    <div v-show="isColor"><Color @colorsFilter="changeFilters" /></div>
-    <div v-show="isShape"><Shape @shapesFilter="changeFilters" /></div>
+    <div v-show="isColor"><Color @changeFilters="getData" /></div>
+    <div v-show="isShape"><Shape @changeFilters="getData" /></div>
     {{ shapesFilter }}
     <CurrentFilter
       v-if="colorsFilter.length || shapesFilter.length"
@@ -41,7 +41,8 @@ import CurrentFilter from "./CurrentFilter.vue";
 import { getGlasses } from "../../api/index";
 import { GlassesHelper } from "../../helper/GlassesHelper";
 import Spinner from "../../components/Spinner";
-import { TYPE_OF_FILTER } from "../../helper/constants";
+// import { TYPE_OF_FILTER } from "../../helper/constants";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -59,8 +60,8 @@ export default {
       glasses: [],
       loader: true,
       pageNumber: 1,
-      colorsFilter: [],
-      shapesFilter: [],
+      // colorsFilter: [],
+      // shapesFilter: [],
     };
   },
   created() {
@@ -73,8 +74,9 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   computed: {
+    ...mapGetters("glasses", ["shapesFilter", "colorsFilter"]),
     quantityItem() {
-      return `${this.glasses.length} RESULTS ON PAGE`;
+      return `${this.glasses.length} RESULTS ON THE PAGE`;
     },
   },
   methods: {
@@ -87,15 +89,6 @@ export default {
       this.isColor = false;
     },
 
-    changeFilters(filter, type) {
-      if (type === TYPE_OF_FILTER.COLOR) {
-        this.colorsFilter = filter;
-      } else {
-        this.shapesFilter = filter;
-      }
-      this.getData();
-    },
-
     handleScroll() {
       const height = window.innerHeight + window.pageYOffset;
       if (height > document.body.offsetHeight + 14) {
@@ -105,8 +98,9 @@ export default {
     },
 
     clearFilter() {
-      this.colorsFilter = [];
-      this.shapesFilter = [];
+      // this.colorsFilter = [];
+      this.$store.commit("glasses/CLEAR_COLORS_FILTER");
+      this.$store.commit("glasses/CLEAR_SHAPES_FILTER");
       this.getData();
     },
 
