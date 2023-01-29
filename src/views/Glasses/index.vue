@@ -3,7 +3,9 @@
     <Navigation />
     <div class="row">
       <div class="col-lg-4 border-black"></div>
-      <div class="col-lg-4 text-center border-black title">Spectacles Women</div>
+      <div class="col-lg-4 text-center border-black title">
+        Spectacles Women
+      </div>
       <div class="col-lg-4 border-black">
         <div class="row">
           <div class="col-lg-3 col-6 title-filter text-center">

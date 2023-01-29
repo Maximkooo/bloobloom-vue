@@ -22,17 +22,17 @@ export default {
       type: Array,
       default: () => [],
     },
-    quantityItem:{
-      type: String
-    }
-  },
-  methods:{
-    styleFilters(filter){
-      return filter = `${filter[0].toUpperCase()}${filter.slice(1)},`
+    quantityItem: {
+      type: String,
     },
-    test(){
-      this.$emit('clear');
-    }
-  }
+  },
+  methods: {
+    styleFilters(filter) {
+      return (filter = `${filter[0].toUpperCase()}${filter.slice(1)},`);
+    },
+    test() {
+      this.$emit("clear");
+    },
+  },
 };
 </script>

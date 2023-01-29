@@ -5,7 +5,11 @@
       v-for="(item, index) in items"
       :key="index"
     >
-      <FilterButton :item="item" :currentFilter="colorsFilter" @currentItem="changeFilter"></FilterButton>
+      <FilterButton
+        :item="item"
+        :currentFilter="colorsFilter"
+        @currentItem="changeFilter"
+      ></FilterButton>
     </div>
   </div>
 </template>

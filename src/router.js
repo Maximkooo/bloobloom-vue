@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router';
 import { store } from './store/index';
 
-import Glasses from './views/Glasses/'
+import Glasses from './views/Glasses'
 
 const routes = [
   {
