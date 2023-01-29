@@ -17,7 +17,7 @@
 
     <div v-show="isColor"><Color @changeFilters="getData" /></div>
     <div v-show="isShape"><Shape @changeFilters="getData" /></div>
-    {{ shapesFilter }}
+
     <CurrentFilter
       v-if="colorsFilter.length || shapesFilter.length"
       :colors="colorsFilter"
@@ -38,10 +38,9 @@ import Color from "./Color.vue";
 import Shape from "./Shape.vue";
 import Table from "./Table.vue";
 import CurrentFilter from "./CurrentFilter.vue";
-import { getGlasses } from "../../api/index";
+// import { getGlasses } from "../../api/index";
 import { GlassesHelper } from "../../helper/GlassesHelper";
 import Spinner from "../../components/Spinner";
-// import { TYPE_OF_FILTER } from "../../helper/constants";
 import { mapGetters } from "vuex";
 
 export default {
@@ -57,11 +56,8 @@ export default {
     return {
       isColor: false,
       isShape: false,
-      glasses: [],
       loader: true,
       pageNumber: 1,
-      // colorsFilter: [],
-      // shapesFilter: [],
     };
   },
   created() {
@@ -74,7 +70,12 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   computed: {
-    ...mapGetters("glasses", ["shapesFilter", "colorsFilter"]),
+    ...mapGetters("glasses", [
+      "glasses",
+      "shapesFilter",
+      "colorsFilter",
+      "currentCollection",
+    ]),
     quantityItem() {
       return `${this.glasses.length} RESULTS ON THE PAGE`;
     },
@@ -107,17 +108,43 @@ export default {
     async getNewPageData() {
       const color = this.formatColors(this.colorsFilter);
       const shape = this.formatShapes(this.shapesFilter);
-      const apiData = await getGlasses(color, shape, this.pageNumber);
-      apiData.data.glasses.map((i) => this.glasses.push(i));
+      // const apiData = await getGlasses(color, shape, this.pageNumber);
+      // apiData.data.glasses.map((i) => this.glasses.push(i));
+
+      this.$store
+        .dispatch("glasses/updateGlasses", {
+          color: color,
+          shape: shape,
+          page: this.pageNumber,
+          collection: this.currentCollection,
+        })
+        .then(() => {
+          this.loader = false;
+        })
+        .catch((e) => {
+          this.loader = false;
+          console.log(e);
+        });
     },
 
-    async getData() {
+    getData() {
       const color = this.formatColors(this.colorsFilter);
       const shape = this.formatShapes(this.shapesFilter);
       this.pageNumber = 1;
-      const apiData = await getGlasses(color, shape, this.pageNumber);
-      this.glasses = apiData.data.glasses;
-      this.loader = false;
+      this.$store
+        .dispatch("glasses/getGlasses", {
+          color: color,
+          shape: shape,
+          page: this.pageNumber,
+          collection: this.currentCollection,
+        })
+        .then(() => {
+          this.loader = false;
+        })
+        .catch((e) => {
+          this.loader = false;
+          console.log(e);
+        });
     },
   },
 };

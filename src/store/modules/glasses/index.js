@@ -4,8 +4,11 @@ import mutations from "./mutations";
 
 
 const state = {
+  glasses: [],
   shapesFilter: [],
-  colorsFilter: []
+  colorsFilter: [],
+  collections: [],
+  currentCollection: 'spectacles-women'
 };
 
 export default {
