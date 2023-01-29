@@ -1,6 +1,6 @@
 # BLOOBLOOM
 
-<a href="https://rococo-faun-67cde2.netlify.app/">DEMO</a>
+<a href="https://rococo-faun-67cde2.netlify.app/" target='_blank'>DEMO</a>
 
 This is a test task which is done using Vue.js The code is written for the purpose of performing a test task.
 I want to note that in the project I tried to perform some tasks in different ways and some code may not be the code for a commercial project. My task was to show the different functionality of this framework and different approaches to the tasks. Of course the application is fully adaptable to all kinds of screens. I also used additional libraries to bring this application closer to a commercial project.
