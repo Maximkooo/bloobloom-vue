@@ -2,7 +2,7 @@
   <header>
     <div class="row">
       <div class="col-4">
-        <div class="menu p-4" @mouseover="isMenu = true">MENU</div>
+        <div class="menu m-4" @mouseover="isMenu = true">MENU</div>
       </div>
       <div class="col-4 text-center navigation">
         <img src="../assets/logo.png" alt="logo" width="30" class="pt-3" />
@@ -32,9 +32,6 @@ export default {
       genders: ["WOMEN", "MEN"],
     };
   },
-  created() {
-    this.$store.dispatch("glasses/getCollections");
-  },
   computed: {
     ...mapGetters("glasses", ["collections", "currentCollection"]),
   },
@@ -53,14 +50,16 @@ export default {
       const currentType = this.collections.filter(
         (item) => item.name.toLowerCase() === type.join(" ").toLowerCase()
       );
-      this.$store.commit("glasses/SET_CURRENT_COLLECTION", currentType[0].configuration_name );
-      this.$store
-        .dispatch("glasses/updateCollection", {
-          color: '',
-          shape: '',
-          page: 1,
-          collection: this.currentCollection,
-        })
+      this.$store.commit(
+        "glasses/SET_CURRENT_COLLECTION",
+        currentType[0].configuration_name
+      );
+      this.$store.dispatch("glasses/updateCollection", {
+        color: "",
+        shape: "",
+        page: 1,
+        collection: this.currentCollection,
+      });
     },
   },
 };

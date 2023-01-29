@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div
-      class="col-4 border-black p-0"
+      class="col-lg-4 col-sm-6 border-black p-0"
       v-for="glass in glasses"
       :key="glass.id"
     >

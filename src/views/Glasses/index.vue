@@ -1,22 +1,23 @@
 <template>
-  <div class="header">
+  <div>
+    <Navigation />
     <div class="row">
-      <div class="col-4 border-black"></div>
-      <div class="col-4 text-center border-black title">Spectacles Women</div>
-      <div class="col-4 border-black">
+      <div class="col-lg-4 border-black"></div>
+      <div class="col-lg-4 text-center border-black title">Spectacles Women</div>
+      <div class="col-lg-4 border-black">
         <div class="row">
-          <div class="col-3 title-filter text-center">
+          <div class="col-lg-3 col-6 title-filter text-center">
             <button class="btn-default" @click="colorMenu">COLOUR</button>
           </div>
-          <div class="col-3 title-filter text-center">
+          <div class="col-lg-3 col-6 title-filter text-center">
             <button class="btn-default" @click="shapeMenu">SHAPE</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div v-show="isColor"><Color @changeFilters="getData" /></div>
-    <div v-show="isShape"><Shape @changeFilters="getData" /></div>
+    <div v-show="isColor"><Color @changeFilters="changeFilters" /></div>
+    <div v-show="isShape"><Shape @changeFilters="changeFilters" /></div>
 
     <CurrentFilter
       v-if="colorsFilter.length || shapesFilter.length"
@@ -38,10 +39,10 @@ import Color from "./Color.vue";
 import Shape from "./Shape.vue";
 import Table from "./Table.vue";
 import CurrentFilter from "./CurrentFilter.vue";
-// import { getGlasses } from "../../api/index";
 import { GlassesHelper } from "../../helper/GlassesHelper";
 import Spinner from "../../components/Spinner";
 import { mapGetters } from "vuex";
+import Navigation from "../../components/Navigation.vue";
 
 export default {
   components: {
@@ -49,6 +50,7 @@ export default {
     Shape,
     Table,
     CurrentFilter,
+    Navigation,
     Spinner,
   },
   mixins: [GlassesHelper],
@@ -94,45 +96,29 @@ export default {
       const height = window.innerHeight + window.pageYOffset;
       if (height > document.body.offsetHeight + 14) {
         this.pageNumber += 1;
-        this.getNewPageData();
+        this.getData("update");
       }
     },
 
     clearFilter() {
-      // this.colorsFilter = [];
       this.$store.commit("glasses/CLEAR_COLORS_FILTER");
       this.$store.commit("glasses/CLEAR_SHAPES_FILTER");
+      this.pageNumber = 1;
+      this.getData();
+    },
+    changeFilters() {
+      this.pageNumber = 1;
       this.getData();
     },
 
-    async getNewPageData() {
+    getData(type) {
       const color = this.formatColors(this.colorsFilter);
       const shape = this.formatShapes(this.shapesFilter);
-      // const apiData = await getGlasses(color, shape, this.pageNumber);
-      // apiData.data.glasses.map((i) => this.glasses.push(i));
+      const action =
+        type === "update" ? "glasses/updateGlasses" : "glasses/getGlasses";
 
       this.$store
-        .dispatch("glasses/updateGlasses", {
-          color: color,
-          shape: shape,
-          page: this.pageNumber,
-          collection: this.currentCollection,
-        })
-        .then(() => {
-          this.loader = false;
-        })
-        .catch((e) => {
-          this.loader = false;
-          console.log(e);
-        });
-    },
-
-    getData() {
-      const color = this.formatColors(this.colorsFilter);
-      const shape = this.formatShapes(this.shapesFilter);
-      this.pageNumber = 1;
-      this.$store
-        .dispatch("glasses/getGlasses", {
+        .dispatch(action, {
           color: color,
           shape: shape,
           page: this.pageNumber,
